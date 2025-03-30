@@ -54,7 +54,7 @@ public class UserImplementation implements UserServices {
 	}
 
 	@Override
-	public boolean deleteUser(Integer id) {
+	public Boolean deleteUser(Integer id) {
 		User user=userRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("User","Id",id));
 		userRepo.delete(user);
 		if(user==null) {
