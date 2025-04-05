@@ -1,10 +1,14 @@
 package com.example.Blogify.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +26,8 @@ public class User {
 	private String password;
 	private String email;
 	private String about;
+	@OneToMany(mappedBy = "user")
+	List<Post> posts;
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -33,6 +39,22 @@ public class User {
 		this.password = password;
 		this.email = email;
 		this.about = about;
+	}
+	
+	public User(String name, String password, String email, String about, List<Post> posts) {
+		super();
+		this.name = name;
+		this.password = password;
+		this.email = email;
+		this.about = about;
+		this.posts = posts;
+	}
+	
+	public List<Post> getPosts() {
+		return posts;
+	}
+	public void setPosts(List<Post> posts) {
+		this.posts = posts;
 	}
 	public Integer getId() {
 		return id;
