@@ -3,6 +3,7 @@ package com.example.Blogify.payloads;
 import java.util.Date;
 
 public class PostDTO {
+	private Integer post_id;
 private String post_title;
 private String content;
 private String imageName;
@@ -58,6 +59,12 @@ public UserDTO getUser() {
 }
 public void setUser(UserDTO user) {
 	this.user = user;
+}
+public Integer getPost_id() {
+	return post_id;
+}
+public void setPost_id(Integer post_id) {
+	this.post_id = post_id;
 }
 
 
