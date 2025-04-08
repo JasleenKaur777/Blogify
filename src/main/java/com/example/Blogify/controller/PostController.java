@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Blogify.entities.Post;
@@ -34,8 +35,8 @@ public class PostController {
 	}
 	
 	@GetMapping("/posts")
-	public ResponseEntity<List<PostDTO>> viewPosts() {
-	List<PostDTO> dto=	service.viewPosts();
+	public ResponseEntity<List<PostDTO>> viewPosts(@RequestParam(value="pageNumber",defaultValue = "0",required = false)Integer pageNumber,@RequestParam(value="pageSize",defaultValue = "5",required = false)Integer pageSize) {
+	List<PostDTO> dto=	service.viewPosts(pageNumber,pageSize);
 	return new ResponseEntity<List<PostDTO>>(dto,HttpStatus.ACCEPTED);
 	}
 	

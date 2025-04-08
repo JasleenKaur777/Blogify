@@ -1,11 +1,15 @@
 package com.example.Blogify.service.impl;
 
+
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.Blogify.entities.Category;
@@ -47,9 +51,10 @@ public class PostImplemention implements PostService {
 		return mapper.map(post, PostDTO.class);
 	}
 
-	@Override
-	public List<PostDTO> viewPosts() {
-		List<Post> posts = post_repo.findAll();
+	public List<PostDTO> viewPosts(Integer pageNumber,Integer pageSize) {
+		Pageable p=PageRequest.of(pageNumber, pageSize);
+		Page<Post> pageContent=post_repo.findAll(p);
+		List<Post> posts=pageContent.getContent();
 		List<PostDTO> postdto = posts.stream().map(post -> mapper.map(post, PostDTO.class))
 				.collect(Collectors.toList());
 		return postdto;
