@@ -17,6 +17,7 @@ import com.example.Blogify.entities.Post;
 import com.example.Blogify.entities.User;
 import com.example.Blogify.exception.ResourceNotFoundException;
 import com.example.Blogify.payloads.PostDTO;
+import com.example.Blogify.payloads.PostResponse;
 import com.example.Blogify.repositories.CategoryRepository;
 import com.example.Blogify.repositories.PostRepository;
 import com.example.Blogify.repositories.UserRepository;
@@ -33,6 +34,9 @@ public class PostImplemention implements PostService {
 	CategoryRepository category_repo;
 	@Autowired
 	UserRepository user_repo;
+	
+	@Autowired
+	PostResponse response;
 
 	@Override
 	public PostDTO insertPost(PostDTO postdto, Integer category_id, Integer user_id) {
@@ -45,19 +49,25 @@ public class PostImplemention implements PostService {
 		post.setCategory(category);
 		post.setContent(postdto.getContent());
 		post.setImageName("default.png");
-		post.setPost_Title(postdto.getPost_title());
+		post.setpostTitle(postdto.getpostTitle());
 		post.setUser(user);
 		post_repo.save(post);
 		return mapper.map(post, PostDTO.class);
 	}
 
-	public List<PostDTO> viewPosts(Integer pageNumber,Integer pageSize) {
+	public PostResponse viewPosts(Integer pageNumber,Integer pageSize) {
 		Pageable p=PageRequest.of(pageNumber, pageSize);
 		Page<Post> pageContent=post_repo.findAll(p);
 		List<Post> posts=pageContent.getContent();
 		List<PostDTO> postdto = posts.stream().map(post -> mapper.map(post, PostDTO.class))
 				.collect(Collectors.toList());
-		return postdto;
+		response.setContent(postdto);
+		response.setLastPage(pageContent.isLast());
+		response.setPageNumber(pageNumber);
+		response.setPageSize(pageSize);
+		response.setTotalElements(pageContent.getNumberOfElements());
+		response.setTotalPages(pageContent.getTotalPages());
+		return response;
 	}
 
 	@Override
@@ -65,7 +75,7 @@ public class PostImplemention implements PostService {
 		Category category = category_repo.findById(category_id)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category id", category_id));
 		Post post = post_repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "Post id", id));
-		post.setPost_Title(postdto.getPost_title());
+		post.setpostTitle(postdto.getpostTitle());
 		post.setContent(postdto.getContent());
 		post.setImageName(postdto.getImageName());
 		post.setCategory(category);
@@ -91,27 +101,76 @@ public class PostImplemention implements PostService {
 		return mapper.map(post, PostDTO.class);
 	}
 
-	@Override
-	public List<PostDTO> getPostByCategory(Integer category_id) {
-		Category category = category_repo.findById(category_id)
-				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category id", category_id));
-		List<Post> posts = post_repo.findByCategory(category);
-		List<PostDTO> dto = posts.stream().map(post -> mapper.map(post, PostDTO.class)).collect(Collectors.toList());
-		return dto;
+	public PostResponse getPostByCategory(int pageNumber, int pageSize, Integer category_id) {
+	    Pageable p = PageRequest.of(pageNumber, pageSize);
+	    
+	    Category category = category_repo.findById(category_id)
+	            .orElseThrow(() -> new ResourceNotFoundException("Category", "Category id", category_id));
+
+	    Page<Post> pageContent = post_repo.findByCategory(category, p); 
+	    List<Post> posts = pageContent.getContent();
+
+	    List<PostDTO> dto = posts.stream()
+	                             .map(post -> mapper.map(post, PostDTO.class))
+	                             .collect(Collectors.toList());
+
+	    response.setContent(dto);
+	    response.setLastPage(pageContent.isLast());
+	    response.setPageNumber(pageNumber);
+	    response.setPageSize(pageSize);
+	    response.setTotalElements((int) pageContent.getTotalElements());
+	    response.setTotalPages(pageContent.getTotalPages());
+
+	    return response;
 	}
 
-	@Override
-	public List<PostDTO> getPostByUser(Integer user_id) {
-		User user = user_repo.findById(user_id)
-				.orElseThrow(() -> new ResourceNotFoundException("User", "user_id", user_id));
-		List<Post> posts = post_repo.findByUser(user);
-		return posts.stream().map(post -> mapper.map(post, PostDTO.class)).collect(Collectors.toList());
+
+	public PostResponse getPostByUser(Integer user_id, int pageNumber, int pageSize) {
+	    User user = user_repo.findById(user_id)
+	            .orElseThrow(() -> new ResourceNotFoundException("User", "user_id", user_id));
+
+	    Pageable p = PageRequest.of(pageNumber, pageSize);
+	    Page<Post> pageContent = post_repo.findByUser(user, p);
+
+	    List<PostDTO> dto = pageContent.getContent().stream()
+	            .map(post -> mapper.map(post, PostDTO.class))
+	            .collect(Collectors.toList());
+
+	    response.setContent(dto);
+	    response.setLastPage(pageContent.isLast());
+	    response.setPageNumber(pageNumber);
+	    response.setPageSize(pageSize);
+	    response.setTotalElements((int) pageContent.getTotalElements());
+	    response.setTotalPages(pageContent.getTotalPages());
+
+	    return response;
 	}
 
-	@Override
-	public List<PostDTO> searchPost(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
+
+	public PostResponse searchPost(String keyword, int pageNumber, int pageSize) {
+	    Pageable p = PageRequest.of(pageNumber, pageSize);
+	    Page<Post> pageContent = post_repo.findByPostTitleContaining(keyword, p);
+
+	    if (pageContent.isEmpty()) {
+	        throw new ResourceNotFoundException("Post title", "keyword", 0);
+	    }
+
+	    List<PostDTO> dto = pageContent.getContent().stream()
+	            .map(post -> mapper.map(post, PostDTO.class))
+	            .collect(Collectors.toList());
+
+	    response.setContent(dto);
+	    response.setLastPage(pageContent.isLast());
+	    response.setPageNumber(pageNumber);
+	    response.setPageSize(pageSize);
+	    response.setTotalElements((int) pageContent.getTotalElements());
+	    response.setTotalPages(pageContent.getTotalPages());
+
+	    return response;
 	}
+
+
+	
+
 
 }

@@ -4,7 +4,6 @@ package com.example.Blogify.payloads;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -35,7 +34,6 @@ public class UserDTO {
 	private String about;
 	public UserDTO() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public UserDTO(Integer id, String name, String password, String email, String about) {
 		super();

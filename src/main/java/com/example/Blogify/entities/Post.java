@@ -17,8 +17,8 @@ public class Post {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer post_id;
-	@Column(name = "post_title", length = 100, nullable = false)
-	private String post_title;
+	@Column(name = "postTitle", length = 100, nullable = false)
+	private String postTitle;
 	@Column(length = 1000)
 	private String content;
 	private String imageName;
@@ -32,11 +32,11 @@ public class Post {
 	private User user;
 	public Post() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
-	public Post(String post_title, String content, String imageName, Date added_Date, Category category, User user) {
+	public Post(String postTitle, String content, String imageName, Date added_Date, Category category, User user) {
 		super();
-		this.post_title = post_title;
+		this.postTitle = postTitle;
 		this.content = content;
 		this.imageName = imageName;
 		this.added_Date = added_Date;
@@ -49,11 +49,11 @@ public class Post {
 	public void setPost_id(Integer post_id) {
 		this.post_id = post_id;
 	}
-	public String getPost_Title() {
-		return post_title;
+	public String getpostTitle() {
+		return postTitle;
 	}
-	public void setPost_Title(String post_title) {
-		this.post_title = post_title;
+	public void setpostTitle(String postTitle) {
+		this.postTitle = postTitle;
 	}
 	public String getContent() {
 		return content;

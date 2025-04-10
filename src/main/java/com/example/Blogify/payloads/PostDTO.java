@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class PostDTO {
 	private Integer post_id;
-private String post_title;
+private String postTitle;
 private String content;
 private String imageName;
 private Date addedDate;
@@ -12,23 +12,23 @@ private CategoryDTO category;
 private UserDTO user;
 public PostDTO() {
 	super();
-	// TODO Auto-generated constructor stub
+	
 }
-public PostDTO(String post_title, String content, String imageName, Date addedDate, CategoryDTO category,
+public PostDTO(String postTitle, String content, String imageName, Date addedDate, CategoryDTO category,
 		UserDTO user) {
 	super();
-	this.post_title = post_title;
+	this.postTitle = postTitle;
 	this.content = content;
 	this.imageName = imageName;
 	this.addedDate = addedDate;
 	this.category = category;
 	this.user = user;
 }
-public String getPost_title() {
-	return post_title;
+public String getpostTitle() {
+	return postTitle;
 }
-public void setPost_title(String post_title) {
-	this.post_title = post_title;
+public void setpostTitle(String postTitle) {
+	this.postTitle = postTitle;
 }
 public String getContent() {
 	return content;

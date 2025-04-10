@@ -16,5 +16,6 @@ public class BlogifyApplication {
     ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
+    
 
 }

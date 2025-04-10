@@ -7,7 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +29,6 @@ public class User {
 	List<Post> posts;
 	public User() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public User(Integer id, String name, String password, String email, String about) {
 		super();

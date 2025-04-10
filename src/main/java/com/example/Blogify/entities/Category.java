@@ -7,7 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -27,7 +26,7 @@ public class Category {
 	private List<Post> posts;
 	public Category() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public Category(String title, String description, List<Post> posts) {
