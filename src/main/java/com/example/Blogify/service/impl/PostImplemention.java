@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.Blogify.entities.Category;
@@ -55,8 +56,15 @@ public class PostImplemention implements PostService {
 		return mapper.map(post, PostDTO.class);
 	}
 
-	public PostResponse viewPosts(Integer pageNumber,Integer pageSize) {
-		Pageable p=PageRequest.of(pageNumber, pageSize);
+	public PostResponse viewPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+		Sort order=null;
+		if(sortDir.equalsIgnoreCase("asc")) {
+		order=Sort.by(sortBy).ascending();
+		}
+		else {
+			order=Sort.by(sortBy).descending();
+		}
+		Pageable p=PageRequest.of(pageNumber, pageSize, order);
 		Page<Post> pageContent=post_repo.findAll(p);
 		List<Post> posts=pageContent.getContent();
 		List<PostDTO> postdto = posts.stream().map(post -> mapper.map(post, PostDTO.class))
@@ -101,8 +109,15 @@ public class PostImplemention implements PostService {
 		return mapper.map(post, PostDTO.class);
 	}
 
-	public PostResponse getPostByCategory(int pageNumber, int pageSize, Integer category_id) {
-	    Pageable p = PageRequest.of(pageNumber, pageSize);
+	public PostResponse getPostByCategory(int pageNumber, int pageSize, Integer category_id,String sortBy,String sortDir) {
+		Sort order=null;
+		if(sortDir.equalsIgnoreCase("asc")) {
+			order=Sort.by(sortBy).ascending();
+		}
+		else {
+			order=Sort.by(sortBy).descending();
+		}
+	    Pageable p = PageRequest.of(pageNumber, pageSize,order);
 	    
 	    Category category = category_repo.findById(category_id)
 	            .orElseThrow(() -> new ResourceNotFoundException("Category", "Category id", category_id));
@@ -149,25 +164,31 @@ public class PostImplemention implements PostService {
 
 	public PostResponse searchPost(String keyword, int pageNumber, int pageSize) {
 	    Pageable p = PageRequest.of(pageNumber, pageSize);
-	    Page<Post> pageContent = post_repo.findByPostTitleContaining(keyword, p);
+	    Page<Post> pageContent = post_repo.findByPostTitleContaining("%"+keyword+"%", p);
 
 	    if (pageContent.isEmpty()) {
 	        throw new ResourceNotFoundException("Post title", "keyword", 0);
 	    }
 
-	    List<PostDTO> dto = pageContent.getContent().stream()
-	            .map(post -> mapper.map(post, PostDTO.class))
-	            .collect(Collectors.toList());
+	    else {
+	    	 List<PostDTO> dto = pageContent.getContent().stream()
+	 	            .map(post -> mapper.map(post, PostDTO.class))
+	 	            .collect(Collectors.toList());
 
-	    response.setContent(dto);
-	    response.setLastPage(pageContent.isLast());
-	    response.setPageNumber(pageNumber);
-	    response.setPageSize(pageSize);
-	    response.setTotalElements((int) pageContent.getTotalElements());
-	    response.setTotalPages(pageContent.getTotalPages());
+	 	    response.setContent(dto);
+	 	    response.setLastPage(pageContent.isLast());
+	 	    response.setPageNumber(pageNumber);
+	 	    response.setPageSize(pageSize);
+	 	    response.setTotalElements((int) pageContent.getTotalElements());
+	 	    response.setTotalPages(pageContent.getTotalPages());
+	 	   return response;
+	    }
+	   
 
-	    return response;
+	    
 	}
+
+	
 
 
 	

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.example.Blogify.config.AppConstants;
 import com.example.Blogify.payloads.PostDTO;
 import com.example.Blogify.payloads.PostResponse;
 import com.example.Blogify.payloads.ResponseMsg;
@@ -33,8 +33,12 @@ public class PostController {
 	}
 	
 	@GetMapping("/posts")
-	public ResponseEntity<PostResponse> viewPosts(@RequestParam(defaultValue = "0",required = false)Integer pageNumber,@RequestParam(defaultValue = "5",required = false)Integer pageSize) {
-	PostResponse dto=	service.viewPosts(pageNumber,pageSize);
+	public ResponseEntity<PostResponse> viewPosts
+	(@RequestParam(defaultValue = AppConstants.PAGE_NUMBER,required = false)Integer pageNumber,
+	 @RequestParam(defaultValue = AppConstants.PAGE_SIZE,required = false)Integer pageSize,
+	 @RequestParam(required=false)String sortBy,
+	@RequestParam(required=false)String sortDir){
+	PostResponse dto=	service.viewPosts(pageNumber, pageSize, sortBy,sortDir);
 	return new ResponseEntity<PostResponse>(dto,HttpStatus.ACCEPTED);
 	}
 	
@@ -48,17 +52,21 @@ public class PostController {
 	public ResponseEntity<PostResponse> getPostByCategory(
 	        @PathVariable Integer category_id,
 	        @RequestParam(defaultValue = "0") Integer pageNumber,
-	        @RequestParam(defaultValue = "5") Integer pageSize) {
+	        @RequestParam(defaultValue = "5") Integer pageSize,
+	        @RequestParam(required=false)String sortBy,
+	        @RequestParam(required=false)String sortDir) {
 
 	    if (pageSize < 1) pageSize = 5;  
 
-	    PostResponse dto = service.getPostByCategory(pageNumber, pageSize, category_id);
+	    PostResponse dto = service.getPostByCategory(pageNumber, pageSize, category_id,sortBy,sortDir);
 	    return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
 	}
 
 	
 	@GetMapping("/user/{user_id}/posts")
-	public ResponseEntity<PostResponse> getPostByUser(@PathVariable Integer user_id,@RequestParam(defaultValue = "0")Integer pageNumber,@RequestParam(defaultValue = "5")Integer pageSize){
+	public ResponseEntity<PostResponse> getPostByUser(@PathVariable Integer user_id,
+			@RequestParam(defaultValue = AppConstants.PAGE_NUMBER)Integer pageNumber,
+			@RequestParam(defaultValue = AppConstants.PAGE_SIZE)Integer pageSize){
 		PostResponse dto=service.getPostByUser(user_id,pageNumber, pageSize);
 		return new ResponseEntity<PostResponse>(dto,HttpStatus.ACCEPTED);
 	}
@@ -80,7 +88,9 @@ public class PostController {
 		}
 	}
 	@GetMapping("/posts/search")
-	public ResponseEntity<PostResponse> searchPost(@RequestParam String keyword,@RequestParam(defaultValue = "0")Integer pageNumber,@RequestParam(defaultValue = "5")Integer pageSize) {
+	public ResponseEntity<PostResponse> searchPost(@RequestParam String keyword,
+			@RequestParam(defaultValue = AppConstants.PAGE_NUMBER)Integer pageNumber,
+			@RequestParam(defaultValue = AppConstants.PAGE_SIZE)Integer pageSize) {
 		PostResponse dto = service.searchPost(keyword, pageNumber, pageSize);
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
