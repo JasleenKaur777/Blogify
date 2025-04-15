@@ -1,8 +1,16 @@
 package com.example.Blogify.controller;
 
+
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,18 +20,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Blogify.config.AppConstants;
 import com.example.Blogify.payloads.PostDTO;
 import com.example.Blogify.payloads.PostResponse;
 import com.example.Blogify.payloads.ResponseMsg;
+import com.example.Blogify.repositories.PostRepository;
+import com.example.Blogify.service.impl.FileServiceImplemention;
 import com.example.Blogify.service.impl.PostImplemention;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/post")
 public class PostController {
 	@Autowired
 	private PostImplemention service;
+	
+	@Autowired
+	private FileServiceImplemention fileService;
+	
+	
+	@Value("${project.image}")
+	String path;
 
 	@PostMapping("/category/{category_id}/user/{user_id}/create-post")
 	public ResponseEntity<PostDTO> insertPost(@RequestBody PostDTO postdto, @PathVariable Integer category_id,
@@ -94,5 +114,31 @@ public class PostController {
 		PostResponse dto = service.searchPost(keyword, pageNumber, pageSize);
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
+	@PostMapping("/posts/{postId}/upload-image")
+    public ResponseEntity<PostDTO> uploadPostImage(
+            @PathVariable Integer postId,
+            @RequestParam("image") MultipartFile imageFile) throws IOException {
+
+        // Step 1: Upload the image and get the stored filename
+        String fileName = fileService.uploadsImage(postId, imageFile);
+
+        // Step 2: Get the post and update its image name
+        PostDTO post = service.getPost(postId);
+        post.setImageName(fileName);
+
+        // Step 3: Save the updated post (category ID is needed to update the post)
+        PostDTO updatedPost = service.updatePost(postId, post, post.getCategory().getCategory_id());
+
+        // Step 4: Return response with updated post
+        return ResponseEntity.ok(updatedPost);
+    }
+	@GetMapping(value = "/images/{filename}", produces = MediaType.IMAGE_JPEG_VALUE)
+	public void serveImage(@PathVariable String filename, HttpServletResponse response) throws IOException {
+	    InputStream in = fileService.getResponse(path, filename);
+	    response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+	    StreamUtils.copy(in, response.getOutputStream());
+	}
+
+
 
 }
