@@ -1,6 +1,8 @@
 package com.example.Blogify.entities;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -30,6 +33,38 @@ public class Post {
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
+	
+	@OneToMany(mappedBy = "posts")
+	Set<Comment> comments=new HashSet<Comment>();
+	
+	public Post(String postTitle, String content, String imageName, Date added_Date, Category category, User user,
+			Set<Comment> comments) {
+		super();
+		this.postTitle = postTitle;
+		this.content = content;
+		this.imageName = imageName;
+		this.added_Date = added_Date;
+		this.category = category;
+		this.user = user;
+		this.comments = comments;
+	}
+	
+	public String getPostTitle() {
+		return postTitle;
+	}
+
+	public void setPostTitle(String postTitle) {
+		this.postTitle = postTitle;
+	}
+
+	public Set<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(Set<Comment> comments) {
+		this.comments = comments;
+	}
+
 	public Post() {
 		super();
 
@@ -48,12 +83,6 @@ public class Post {
 	}
 	public void setPost_id(Integer post_id) {
 		this.post_id = post_id;
-	}
-	public String getpostTitle() {
-		return postTitle;
-	}
-	public void setpostTitle(String postTitle) {
-		this.postTitle = postTitle;
 	}
 	public String getContent() {
 		return content;

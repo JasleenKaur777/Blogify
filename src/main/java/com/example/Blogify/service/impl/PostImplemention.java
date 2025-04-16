@@ -50,7 +50,7 @@ public class PostImplemention implements PostService {
 		post.setCategory(category);
 		post.setContent(postdto.getContent());
 		post.setImageName("default.png");
-		post.setpostTitle(postdto.getpostTitle());
+		post.setPostTitle(postdto.getpostTitle());
 		post.setUser(user);
 		post_repo.save(post);
 		return mapper.map(post, PostDTO.class);
@@ -83,7 +83,7 @@ public class PostImplemention implements PostService {
 		Category category = category_repo.findById(category_id)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category id", category_id));
 		Post post = post_repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "Post id", id));
-		post.setpostTitle(postdto.getpostTitle());
+		post.setPostTitle(postdto.getpostTitle());
 		post.setContent(postdto.getContent());
 		post.setImageName(postdto.getImageName());
 		post.setCategory(category);

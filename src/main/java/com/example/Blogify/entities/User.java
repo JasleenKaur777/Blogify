@@ -1,6 +1,8 @@
 package com.example.Blogify.entities;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,6 +29,25 @@ public class User {
 	private String about;
 	@OneToMany(mappedBy = "user")
 	List<Post> posts;
+	
+	@OneToMany(mappedBy = "user")
+	Set<Comment> comments=new HashSet<Comment>();
+	
+	public Set<Comment> getComments() {
+		return comments;
+	}
+	public void setComments(Set<Comment> comments) {
+		this.comments = comments;
+	}
+	public User(String name, String password, String email, String about, List<Post> posts, Set<Comment> comments) {
+		super();
+		this.name = name;
+		this.password = password;
+		this.email = email;
+		this.about = about;
+		this.posts = posts;
+		this.comments = comments;
+	}
 	public User() {
 		super();
 	}
