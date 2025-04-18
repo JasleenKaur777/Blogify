@@ -63,6 +63,21 @@ public class CommentImplemention implements CommentService {
 		return comentdtos;
 	}
 
+	@Override
+	public CommentDTO updateComment(Integer commentid,CommentDTO commentdto) {
+		Comment comment=repo.findById(commentid).orElseThrow(()->new ResourceNotFoundException("Comment", "Comment id", commentid));
+		comment.setContent(commentdto.getContent());
+		repo.save(comment);
+		return mapper.map(comment, CommentDTO.class);
+	}
+
+	@Override
+	public Boolean deleteComment(Integer commentid) {
+		Comment comment=repo.findById(commentid).orElseThrow(()->new ResourceNotFoundException("Comment", "Comment id", commentid));
+		repo.delete(comment);
+		return true;
+	}
+
 	
 
 }
