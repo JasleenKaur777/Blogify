@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 
 import com.example.Blogify.payloads.ResponseMsg;
 
@@ -32,6 +33,12 @@ public class GlobalExceptionHandler extends RuntimeException {
 	        errors.put(error.getField(), error.getDefaultMessage())
 	    );
 	    return ResponseEntity.badRequest().body(errors);
+	}
+	@ExceptionHandler(Unauthorized.class)
+	public ResponseEntity<ResponseMsg> handleUnauthorizedException(Unauthorized ex) {
+	    String message = ex.getMessage();
+	    ResponseMsg res = new ResponseMsg("Unauthorized", message, false);
+	    return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
 	}
 
 }
