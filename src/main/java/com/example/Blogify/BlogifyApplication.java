@@ -25,9 +25,11 @@ public class BlogifyApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println(encoder.encode("Rahul@2024"));
+		System.out.println(encoder.encode("Raman@2024"));
 		
 	}
+	//rahul pw-Rahul@2024
+	//liza pw-lizaA123@
     
 
 }

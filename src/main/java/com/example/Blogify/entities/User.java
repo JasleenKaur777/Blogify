@@ -38,10 +38,10 @@ public class User implements UserDetails {
 	private String password;
 	private String email;
 	private String about;
-	@OneToMany(mappedBy = "user")
-	List<Post> posts;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Post> posts;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 	Set<Comment> comments=new HashSet<Comment>();
 	
 	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
@@ -132,6 +132,7 @@ public class User implements UserDetails {
 		// TODO Auto-generated method stub
 		return email;
 	}
+	
 	
 
 }

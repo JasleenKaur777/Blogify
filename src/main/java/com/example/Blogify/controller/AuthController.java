@@ -1,6 +1,8 @@
 package com.example.Blogify.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.Blogify.exception.ApiException;
 import com.example.Blogify.payloads.JWTAuthRequest;
 import com.example.Blogify.payloads.JWTAuthResponse;
 import com.example.Blogify.security.CustomUserDetailService;
@@ -47,8 +50,18 @@ public class AuthController {
 
             return ResponseEntity.ok(response);
 
-        } catch (Exception ex) {
-            return ResponseEntity.status(401).body("Invalid username or password!");
+        } catch (BadCredentialsException e) {
+        	throw new ApiException("Invalid username or password!");
+//            return new ResponseEntity<>("Invalid username or password!",HttpStatusCode.valueOf(401)) ;    
+            		
+//        } catch (DisabledException e) {
+//        	 return new ResponseEntity<>("User is disabled!",HttpStatusCode.valueOf(403)) ; 
+//           
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            return new ResponseEntity<>("Something went wrong during authentication.",HttpStatusCode.valueOf(500)); 
+//          
         }
     }
+
 }

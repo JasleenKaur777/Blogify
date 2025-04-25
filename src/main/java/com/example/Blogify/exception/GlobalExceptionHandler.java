@@ -5,14 +5,18 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException.Forbidden;
 import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 
 import com.example.Blogify.payloads.ResponseMsg;
 
 @RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler extends RuntimeException {
   
 	/**
@@ -34,11 +38,17 @@ public class GlobalExceptionHandler extends RuntimeException {
 	    );
 	    return ResponseEntity.badRequest().body(errors);
 	}
-	@ExceptionHandler(Unauthorized.class)
-	public ResponseEntity<ResponseMsg> handleUnauthorizedException(Unauthorized ex) {
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ResponseMsg> handleAccessDeniedException(AccessDeniedException ex) {
 	    String message = ex.getMessage();
-	    ResponseMsg res = new ResponseMsg("Unauthorized", message, false);
-	    return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
+	    ResponseMsg res = new ResponseMsg("Forbidden", message, false);
+	    return new ResponseEntity<>(res, HttpStatus.FORBIDDEN);
+	}
+	@ExceptionHandler(ApiException.class)
+	public ResponseEntity<ResponseMsg> handleApiException(ApiException ex) {
+	    String message = ex.getMessage();
+	    ResponseMsg res = new ResponseMsg("Forbidden", message, false);
+	    return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
 	}
 
 }
