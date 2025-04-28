@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.Blogify.entities.User;
@@ -20,6 +21,9 @@ public class UserImplementation implements UserServices {
 
 	@Autowired
 	private ModelMapper mapper;
+	
+	@Autowired
+	private PasswordEncoder encoder;
 	@Override
 	public UserDTO createUser(UserDTO userdto) {
 		User user = this.getUser(userdto);
@@ -88,6 +92,13 @@ public class UserImplementation implements UserServices {
 //		user.setName(userdto.getName());
 //		user.setPassword(userdto.getPassword());
 		return user;
+	}
+
+	@Override
+	public UserDTO registerUser(UserDTO dto) {
+		User user=mapper.map(dto, User.class);
+		user.setPassword(encoder.encode(user.getPassword()));
+		return null;
 	}
 
 }

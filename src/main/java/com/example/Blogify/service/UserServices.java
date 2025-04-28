@@ -10,4 +10,5 @@ List<UserDTO> getAllUser();
 UserDTO updateUser(UserDTO user,Integer id);
 UserDTO getUserById(Integer id);
 Boolean deleteUser(Integer id);
+UserDTO registerUser(UserDTO dto);
 }
