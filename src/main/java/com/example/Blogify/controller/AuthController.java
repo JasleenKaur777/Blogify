@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.Blogify.exception.ApiException;
 import com.example.Blogify.payloads.JWTAuthRequest;
 import com.example.Blogify.payloads.JWTAuthResponse;
+import com.example.Blogify.payloads.UserDTO;
 import com.example.Blogify.security.CustomUserDetailService;
 import com.example.Blogify.security.JWTTokenHelper;
+import com.example.Blogify.service.impl.UserImplementation;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,6 +34,9 @@ public class AuthController {
 
     @Autowired
     private CustomUserDetailService userDetailService;
+    
+    @Autowired
+    private UserImplementation service;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody JWTAuthRequest request) {
@@ -52,16 +57,13 @@ public class AuthController {
 
         } catch (BadCredentialsException e) {
         	throw new ApiException("Invalid username or password!");
-//            return new ResponseEntity<>("Invalid username or password!",HttpStatusCode.valueOf(401)) ;    
-            		
-//        } catch (DisabledException e) {
-//        	 return new ResponseEntity<>("User is disabled!",HttpStatusCode.valueOf(403)) ; 
-//           
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            return new ResponseEntity<>("Something went wrong during authentication.",HttpStatusCode.valueOf(500)); 
-//          
         }
+    }
+    @PostMapping("/register")
+    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userdto){
+    UserDTO dto=	service.registerUser(userdto);
+    return new ResponseEntity<UserDTO>(dto,HttpStatus.ACCEPTED);
+    
     }
 
 }

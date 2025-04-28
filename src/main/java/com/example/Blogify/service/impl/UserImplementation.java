@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.Blogify.config.AppConstants;
+import com.example.Blogify.entities.Role;
 import com.example.Blogify.entities.User;
 import com.example.Blogify.payloads.UserDTO;
+import com.example.Blogify.repositories.RoleRepository;
 import com.example.Blogify.repositories.UserRepository;
 import com.example.Blogify.service.UserServices;
 import com.example.Blogify.exception.*;
@@ -24,6 +27,11 @@ public class UserImplementation implements UserServices {
 	
 	@Autowired
 	private PasswordEncoder encoder;
+	
+	@Autowired
+	private RoleRepository roleRepo;
+	
+	
 	@Override
 	public UserDTO createUser(UserDTO userdto) {
 		User user = this.getUser(userdto);
@@ -98,7 +106,10 @@ public class UserImplementation implements UserServices {
 	public UserDTO registerUser(UserDTO dto) {
 		User user=mapper.map(dto, User.class);
 		user.setPassword(encoder.encode(user.getPassword()));
-		return null;
+		Role role=roleRepo.findById(AppConstants.NORMAL_USER).get();
+		user.getRoles().add(role);
+		User newUser=userRepo.save(user);
+		return mapper.map(newUser, UserDTO.class);
 	}
 
 }
