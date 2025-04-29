@@ -21,6 +21,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,7 +30,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class User implements UserDetails {
+@Table(name="user")
+public class UserClass implements UserDetails {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -44,7 +50,7 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 	Set<Comment> comments=new HashSet<Comment>();
 	
-	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="role_user",
 	joinColumns =@JoinColumn(name="user_id", referencedColumnName = "id"),
 	inverseJoinColumns = @JoinColumn(name="role_id",referencedColumnName = "id"))
@@ -56,7 +62,7 @@ public class User implements UserDetails {
 	public void setComments(Set<Comment> comments) {
 		this.comments = comments;
 	}
-	public User(String name, String password, String email, String about, List<Post> posts, Set<Comment> comments) {
+	public UserClass(String name, String password, String email, String about, List<Post> posts, Set<Comment> comments) {
 		super();
 		this.name = name;
 		this.password = password;
@@ -65,10 +71,10 @@ public class User implements UserDetails {
 		this.posts = posts;
 		this.comments = comments;
 	}
-	public User() {
+	public UserClass() {
 		super();
 	}
-	public User(Integer id, String name, String password, String email, String about) {
+	public UserClass(Integer id, String name, String password, String email, String about) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -77,7 +83,7 @@ public class User implements UserDetails {
 		this.about = about;
 	}
 	
-	public User(String name, String password, String email, String about, List<Post> posts) {
+	public UserClass(String name, String password, String email, String about, List<Post> posts) {
 		super();
 		this.name = name;
 		this.password = password;
@@ -138,6 +144,26 @@ public class User implements UserDetails {
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return email;
+	}
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 	
 	

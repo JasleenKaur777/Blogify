@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.Blogify.entities.Category;
 import com.example.Blogify.entities.Post;
-import com.example.Blogify.entities.User;
+import com.example.Blogify.entities.UserClass;
 import com.example.Blogify.exception.ResourceNotFoundException;
 import com.example.Blogify.payloads.PostDTO;
 import com.example.Blogify.payloads.PostResponse;
@@ -43,7 +43,7 @@ public class PostImplemention implements PostService {
 	public PostDTO insertPost(PostDTO postdto, Integer category_id, Integer user_id) {
 		Category category = category_repo.findById(category_id)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category id", category_id));
-		User user = user_repo.findById(user_id)
+		UserClass user = user_repo.findById(user_id)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "user_id", user_id));
 		Post post = mapper.map(postdto, Post.class);
 		post.setAdded_Date(new Date());
@@ -141,7 +141,7 @@ public class PostImplemention implements PostService {
 
 
 	public PostResponse getPostByUser(Integer user_id, int pageNumber, int pageSize) {
-	    User user = user_repo.findById(user_id)
+	    UserClass user = user_repo.findById(user_id)
 	            .orElseThrow(() -> new ResourceNotFoundException("User", "user_id", user_id));
 
 	    Pageable p = PageRequest.of(pageNumber, pageSize);

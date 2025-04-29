@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.Blogify.entities.User;
+import com.example.Blogify.entities.UserClass;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
-Optional<User> findByEmail(String email);
+public interface UserRepository extends JpaRepository<UserClass, Integer> {
+Optional<UserClass> findByEmail(String email);
 }

@@ -32,12 +32,12 @@ public class Post {
 	private Category category;
 	@ManyToOne
 	@JoinColumn(name="user_id")
-	private User user;
+	private UserClass user;
 	
 	@OneToMany(mappedBy = "posts")
 	Set<Comment> comments=new HashSet<Comment>();
 	
-	public Post(String postTitle, String content, String imageName, Date added_Date, Category category, User user,
+	public Post(String postTitle, String content, String imageName, Date added_Date, Category category, UserClass user,
 			Set<Comment> comments) {
 		super();
 		this.postTitle = postTitle;
@@ -69,7 +69,7 @@ public class Post {
 		super();
 
 	}
-	public Post(String postTitle, String content, String imageName, Date added_Date, Category category, User user) {
+	public Post(String postTitle, String content, String imageName, Date added_Date, Category category, UserClass user) {
 		super();
 		this.postTitle = postTitle;
 		this.content = content;
@@ -108,10 +108,10 @@ public class Post {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	public User getUser() {
+	public UserClass getUser() {
 		return user;
 	}
-	public void setUser(User user) {
+	public void setUser(UserClass user) {
 		this.user = user;
 	}
 

@@ -1,13 +1,9 @@
 package com.example.Blogify.security;
 
 import java.security.Key;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.function.Function;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.*;
@@ -48,13 +44,12 @@ public class JWTTokenHelper {
 
     public String generateToken(String username) {
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+                .setSubject(username) // Set the subject (username in this case)
+                .setIssuedAt(new Date(System.currentTimeMillis())) // Issue time
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000)) // Expiration time
+                .signWith(SignatureAlgorithm.HS256, secret) // Sign with HS256 algorithm and the secret key
+                .compact(); // Generate and return the JWT
     }
-
     public Boolean validateToken(String token, String username) {
         final String extractedUsername = getUsernameFromToken(token);
         return (extractedUsername.equals(username) && !isTokenExpired(token));

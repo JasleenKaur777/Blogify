@@ -16,12 +16,12 @@ public class Role {
 private Integer id;
 private String name;
 @ManyToMany(mappedBy = "roles")
-private Set<User> users=new HashSet<User>();
+private Set<UserClass> users=new HashSet<UserClass>();
 public Role() {
 	super();
 	// TODO Auto-generated constructor stub
 }
-public Role(Integer id, String name, Set<User> users) {
+public Role(Integer id, String name, Set<UserClass> users) {
 	super();
 	this.id = id;
 	this.name = name;
@@ -39,10 +39,10 @@ public String getName() {
 public void setName(String name) {
 	this.name = name;
 }
-public Set<User> getUsers() {
+public Set<UserClass> getUsers() {
 	return users;
 }
-public void setUsers(Set<User> users) {
+public void setUsers(Set<UserClass> users) {
 	this.users = users;
 }
 

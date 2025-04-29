@@ -8,12 +8,12 @@ import org.springframework.data.repository.query.Param;
 
 import com.example.Blogify.entities.Category;
 import com.example.Blogify.entities.Post;
-import com.example.Blogify.entities.User;
+import com.example.Blogify.entities.UserClass;
 
 
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
-     Page<Post> findByUser(User user,Pageable p);
+     Page<Post> findByUser(UserClass user,Pageable p);
      Page<Post> findByCategory(Category category,Pageable p);
      @Query("select p from Post p where p.postTitle like:key")
      Page<Post> findByPostTitleContaining(@Param("key") String keyword,Pageable p);

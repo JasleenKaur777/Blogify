@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.Blogify.config.AppConstants;
 import com.example.Blogify.entities.Role;
-import com.example.Blogify.entities.User;
+import com.example.Blogify.entities.UserClass;
 import com.example.Blogify.payloads.UserDTO;
 import com.example.Blogify.repositories.RoleRepository;
 import com.example.Blogify.repositories.UserRepository;
@@ -34,8 +34,8 @@ public class UserImplementation implements UserServices {
 	
 	@Override
 	public UserDTO createUser(UserDTO userdto) {
-		User user = this.getUser(userdto);
-		User updateUser=userRepo.save(user);
+		UserClass user = this.getUser(userdto);
+		UserClass updateUser=userRepo.save(user);
 		return this.getUserDTO(updateUser);
 
 		
@@ -43,73 +43,58 @@ public class UserImplementation implements UserServices {
 
 	@Override
 	public List<UserDTO> getAllUser() {
-		List<User> users=userRepo.findAll();
+		List<UserClass> users=userRepo.findAll();
 		List<UserDTO> userdto=users.stream().map(user->this.getUserDTO(user)).collect(Collectors.toList());
 		return userdto;
 	}
 
 	@Override
 	public UserDTO updateUser(UserDTO userdto, Integer id) {
-		User user=userRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("User","Id",id));
-		user.setAbout(userdto.getAbout());
-		user.setEmail(user.getEmail());
-		user.setId(userdto.getId());
-		user.setName(userdto.getName());
-		user.setPassword(userdto.getPassword());
-		User updateUser=userRepo.save(user);
-		UserDTO userdto1=this.getUserDTO(updateUser);
-		return userdto1;
+	    UserClass user = userRepo.findById(id)
+	        .orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
+
+	    user.setAbout(userdto.getAbout());
+	    user.setEmail(userdto.getEmail());
+	    user.setId(userdto.getId());
+	    user.setName(userdto.getName());
+	    user.setPassword(encoder.encode(userdto.getPassword()));
+
+	    UserClass updatedUser = userRepo.save(user);
+	    return getUserDTO(updatedUser);
 	}
 
 	@Override
 	public UserDTO getUserById(Integer id) {
-		User user=userRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("User","Id",id));
-		UserDTO userdto1=this.getUserDTO(user);
-		return userdto1;
+	    UserClass user = userRepo.findById(id)
+	        .orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
+	    return getUserDTO(user);
 	}
 
 	@Override
 	public Boolean deleteUser(Integer id) {
-		User user=userRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("User","Id",id));
-		userRepo.delete(user);
-		if(user==null) {
-			return false;
-		}
-		else {
-			return true;
-		}
-		
+	    UserClass user = userRepo.findById(id)
+	        .orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
+	    userRepo.delete(user);
+	    return true;
 	}
 
-	public UserDTO getUserDTO(User user) {
-		UserDTO userdto = this.mapper.map(user, UserDTO.class);
-//		userdto.setId(user.getId());
-//		userdto.setAbout(user.getAbout());
-//		userdto.setEmail(user.getEmail());
-//		userdto.setName(user.getName());
-//		userdto.setPassword(user.getPassword());
-		return userdto;
-
+	public UserDTO getUserDTO(UserClass user) {
+	    return mapper.map(user, UserDTO.class);
 	}
 
-	public User getUser(UserDTO userdto) {
-		User user = this.mapper.map(userdto, User.class);
-//		user.setAbout(userdto.getAbout());
-//		user.setEmail(userdto.getEmail());
-//		user.setId(userdto.getId());
-//		user.setName(userdto.getName());
-//		user.setPassword(userdto.getPassword());
-		return user;
+	public UserClass getUser(UserDTO userdto) {
+	    return mapper.map(userdto, UserClass.class);
 	}
 
 	@Override
 	public UserDTO registerUser(UserDTO dto) {
-		User user=mapper.map(dto, User.class);
-		user.setPassword(encoder.encode(user.getPassword()));
-		Role role=roleRepo.findById(AppConstants.NORMAL_USER).get();
-		user.getRoles().add(role);
-		User newUser=userRepo.save(user);
-		return mapper.map(newUser, UserDTO.class);
+	    UserClass user = mapper.map(dto, UserClass.class);
+	    user.setPassword(encoder.encode(user.getPassword()));
+	    Role role = roleRepo.findById(AppConstants.NORMAL_USER).orElseThrow();
+	    user.getRoles().add(role);
+	    UserClass newUser = userRepo.save(user);
+	    return mapper.map(newUser, UserDTO.class);
 	}
+
 
 }

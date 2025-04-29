@@ -18,14 +18,14 @@ private Integer id;
 private String content;
 
 @ManyToOne
-private User user;
+private UserClass user;
 @ManyToOne
 private Post posts;
 public Comment() {
 	super();
 	
 }
-public Comment(String content, User user, Post posts) {
+public Comment(String content, UserClass user, Post posts) {
 	super();
 	this.content = content;
 	this.user = user;
@@ -43,10 +43,10 @@ public String getContent() {
 public void setContent(String content) {
 	this.content = content;
 }
-public User getUser() {
+public UserClass getUser() {
 	return user;
 }
-public void setUser(User user) {
+public void setUser(UserClass user) {
 	this.user = user;
 }
 public Post getPosts() {

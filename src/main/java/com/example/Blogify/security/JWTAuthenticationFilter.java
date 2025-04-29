@@ -30,7 +30,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	            throws ServletException, IOException {
 
 	        String requestTokenHeader = request.getHeader("Authorization");
-
 	        String username = null;
 	        String jwtToken = null;
 
@@ -40,7 +39,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	            try {
 	                username = jwtTokenHelper.getUsernameFromToken(jwtToken);
 	            } catch (Exception e) {
+	                // If token extraction fails, send a 401 Unauthorized response
 	                System.out.println("Invalid token: " + e.getMessage());
+	                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	                response.getWriter().write("Invalid or expired token");
+	                return;
 	            }
 	        }
 
@@ -54,13 +57,13 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	                                userDetails, null, userDetails.getAuthorities());
 
 	                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
 	                SecurityContextHolder.getContext().setAuthentication(authToken);
 	            }
 	        }
 
 	        filterChain.doFilter(request, response);
 	    }
+
 	    @Override
 	    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 	        String path = request.getRequestURI();

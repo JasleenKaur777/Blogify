@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.example.Blogify.security.CustomUserDetailService;
 import com.example.Blogify.security.JWTAuthenticationFilter;
@@ -25,6 +26,7 @@ import com.example.Blogify.security.JWTAuthenticationFilter;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
+@EnableWebMvc
 public class SpringSecurity {
 
 	@Autowired
@@ -33,19 +35,21 @@ public class SpringSecurity {
 	@Autowired
 	private JWTAuthenticationFilter jwtAuthenticationFilter;
 
-	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable()
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(auth -> 
-				auth
-				.requestMatchers(HttpMethod.GET, "/**").permitAll()
-				.requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
-				.anyRequest().authenticated())
-				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+	 @Bean
+	    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	        http.csrf().disable()
+	            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	            .authorizeHttpRequests(auth ->
+	                auth
+	                    .requestMatchers(HttpMethod.GET, "/**").permitAll()  // Allow GET requests for all paths
+	                    .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()  // Allow login and register endpoints
+	                    .requestMatchers("/swagger-ui.html", "/v3/api-docs", "/swagger-ui/**").permitAll()  // Allow Swagger UI and Docs
+	                    .anyRequest().authenticated()  // All other requests require authentication
+	            )
+	            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // Add JWT authentication filter
 
-		return http.build();
-	}
+	        return http.build();
+	    }
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
