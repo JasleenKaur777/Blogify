@@ -42,7 +42,7 @@ public class SpringSecurity {
 	            .authorizeHttpRequests(auth ->
 	                auth
 	                    .requestMatchers(HttpMethod.GET, "/**").permitAll()  // Allow GET requests for all paths
-	                    .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()  // Allow login and register endpoints
+	                    .requestMatchers("/api/auth/login", "/api/auth/register", "/error").permitAll()
 	                    .requestMatchers("/swagger-ui.html", "/v3/api-docs", "/swagger-ui/**").permitAll()  // Allow Swagger UI and Docs
 	                    .anyRequest().authenticated()  // All other requests require authentication
 	            )

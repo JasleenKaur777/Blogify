@@ -44,12 +44,13 @@ public class JWTTokenHelper {
 
     public String generateToken(String username) {
         return Jwts.builder()
-                .setSubject(username) // Set the subject (username in this case)
-                .setIssuedAt(new Date(System.currentTimeMillis())) // Issue time
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000)) // Expiration time
-                .signWith(SignatureAlgorithm.HS256, secret) // Sign with HS256 algorithm and the secret key
-                .compact(); // Generate and return the JWT
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .signWith(key, SignatureAlgorithm.HS256)  // ✅ Use `key`, not `secret`
+                .compact();
     }
+
     public Boolean validateToken(String token, String username) {
         final String extractedUsername = getUsernameFromToken(token);
         return (extractedUsername.equals(username) && !isTokenExpired(token));
