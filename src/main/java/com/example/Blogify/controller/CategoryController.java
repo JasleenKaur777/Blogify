@@ -18,10 +18,12 @@ import com.example.Blogify.payloads.CategoryDTO;
 import com.example.Blogify.payloads.ResponseMsg;
 import com.example.Blogify.service.impl.CategoryImplemention;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/category")
+@SecurityRequirement(name = "bearerAuth") // Apply to this controller
 public class CategoryController {
 	@Autowired
 private CategoryImplemention service;

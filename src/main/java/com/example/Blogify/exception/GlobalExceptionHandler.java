@@ -36,8 +36,9 @@ public class GlobalExceptionHandler extends RuntimeException {
 	    ex.getBindingResult().getFieldErrors().forEach(error -> 
 	        errors.put(error.getField(), error.getDefaultMessage())
 	    );
-	    return ResponseEntity.badRequest().body(errors);
+	    return new ResponseEntity<>(errors, HttpStatus.UNAUTHORIZED);
 	}
+
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<ResponseMsg> handleAccessDeniedException(AccessDeniedException ex) {
 	    String message = ex.getMessage();
@@ -45,10 +46,12 @@ public class GlobalExceptionHandler extends RuntimeException {
 	    return new ResponseEntity<>(res, HttpStatus.FORBIDDEN);
 	}
 	@ExceptionHandler(ApiException.class)
-	public ResponseEntity<ResponseMsg> handleApiException(ApiException ex) {
-	    String message = ex.getMessage();
-	    ResponseMsg res = new ResponseMsg("Forbidden", message, false);
-	    return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
-	}
+	 public ResponseEntity<ResponseMsg> handleApiException(ApiException ex) {
+        return new ResponseEntity<>(new ResponseMsg("message",ex.getMessage(), false), HttpStatus.UNAUTHORIZED);
+    }
+	@ExceptionHandler(Exception.class)
+	 public ResponseEntity<ResponseMsg> handleAllException(Exception ex) {
+       return new ResponseEntity<>(new ResponseMsg("message",ex.getMessage(), false), HttpStatus.UNAUTHORIZED);
+   }
 
 }

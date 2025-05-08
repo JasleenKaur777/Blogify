@@ -23,6 +23,8 @@ import com.example.Blogify.security.CustomUserDetailService;
 import com.example.Blogify.security.JWTTokenHelper;
 import com.example.Blogify.service.impl.UserImplementation;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -43,11 +45,11 @@ public class AuthController {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getUsername(), request.getPassword()
+                            request.getEmail(), request.getPassword()
                     )
             );
 
-            UserDetails userDetails = userDetailService.loadUserByUsername(request.getUsername());
+            UserDetails userDetails = userDetailService.loadUserByUsername(request.getEmail());
             String token = jwtTokenHelper.generateToken(userDetails.getUsername());
 
             JWTAuthResponse response = new JWTAuthResponse();
@@ -60,7 +62,7 @@ public class AuthController {
         }
     }
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userdto){
+    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserDTO userdto){
     UserDTO dto=	service.registerUser(userdto);
     return new ResponseEntity<UserDTO>(dto,HttpStatus.ACCEPTED);
     

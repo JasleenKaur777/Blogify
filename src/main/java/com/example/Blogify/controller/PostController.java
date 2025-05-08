@@ -30,8 +30,11 @@ import com.example.Blogify.repositories.PostRepository;
 import com.example.Blogify.service.impl.FileServiceImplemention;
 import com.example.Blogify.service.impl.PostImplemention;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @RestController
 @RequestMapping("/api/post")
 public class PostController {
@@ -114,24 +117,29 @@ public class PostController {
 		PostResponse dto = service.searchPost(keyword, pageNumber, pageSize);
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
-	@PostMapping("/posts/{postId}/upload-image")
-    public ResponseEntity<PostDTO> uploadPostImage(
-            @PathVariable Integer postId,
-            @RequestParam("image") MultipartFile imageFile) throws IOException {
+	@PostMapping(value = "/posts/{postId}/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@Operation(summary = "Upload post image", description = "Uploads an image for the given post")
+	@ApiResponses(value = {
+	    @ApiResponse(responseCode = "200", description = "Image uploaded successfully"),
+	    @ApiResponse(responseCode = "400", description = "Invalid image or not a multipart request"),
+	    @ApiResponse(responseCode = "404", description = "Post not found")
+	})
+	public ResponseEntity<PostDTO> uploadPostImage(
+	        @PathVariable Integer postId,
+	        @RequestParam("image") MultipartFile imageFile) throws IOException {
 
-        // Step 1: Upload the image and get the stored filename
-        String fileName = fileService.uploadsImage(postId, imageFile);
+	    // Step 1: Upload the image and get the stored filename
+	    String fileName = fileService.uploadsImage(postId, imageFile);
 
-        // Step 2: Get the post and update its image name
-        PostDTO post = service.getPost(postId);
-        post.setImageName(fileName);
+	    // Step 2: Get the post and update its image name
+	    PostDTO post = service.getPost(postId);
+	    post.setImageName(fileName);
 
-        // Step 3: Save the updated post (category ID is needed to update the post)
-        PostDTO updatedPost = service.updatePost(postId, post, post.getCategory().getCategory_id());
+	    // Step 3: Save the updated post
+	    PostDTO updatedPost = service.updatePost(postId, post, post.getCategory().getCategory_id());
 
-        // Step 4: Return response with updated post
-        return ResponseEntity.ok(updatedPost);
-    }
+	    return ResponseEntity.ok(updatedPost);
+	}
 	@GetMapping(value = "/images/{filename}", produces = MediaType.IMAGE_JPEG_VALUE)
 	public void serveImage(@PathVariable String filename, HttpServletResponse response) throws IOException {
 	    InputStream in = fileService.getResponse(path, filename);

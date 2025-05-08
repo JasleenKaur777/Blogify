@@ -17,9 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@Getter
-@Setter
 public class UserDTO {
 	
 	private Integer id;
@@ -40,7 +37,7 @@ public class UserDTO {
 	@NotBlank(message = "About section cannot be empty")
 	private String about;
 	
-	private Set<RoleDTO> roles=new HashSet<RoleDTO>();
+	
 	
 	public UserDTO() {
 		super();
@@ -83,11 +80,6 @@ public class UserDTO {
 	public void setAbout(String about) {
 		this.about = about;
 	}
-	public Set<RoleDTO> getRoles() {
-		return roles;
-	}
-	public void setRoles(Set<RoleDTO> roles) {
-		this.roles = roles;
-	}
+	
 	
 }

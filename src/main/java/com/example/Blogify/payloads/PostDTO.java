@@ -24,10 +24,10 @@ public PostDTO(String postTitle, String content, String imageName, Date addedDat
 	this.category = category;
 	this.user = user;
 }
-public String getpostTitle() {
+public String getPostTitle() {
 	return postTitle;
 }
-public void setpostTitle(String postTitle) {
+public void setPostTitle(String postTitle) {
 	this.postTitle = postTitle;
 }
 public String getContent() {
